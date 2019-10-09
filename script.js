@@ -4,15 +4,14 @@ function Rect(x, color, speed) {
     this.y = 0;
     this.color = color;
     this.speed = speed;
-    this.height = 20;
-    this.width = 20;
+    this.height = 30;
+    this.width = 30;
     this.draw = function () {
         this._canvas = document.querySelector('canvas');
         if (this._canvas.getContext) {
             let ctx = this._canvas.getContext('2d');
             ctx.fillStyle = this.color;
             ctx.fillRect(this.x, this.y, this.width, this.height);
-            // this.y+=1;
         }
     };
 }
@@ -39,7 +38,6 @@ function rectCreate() {
     let speed = Math.random() / 15 + 0.001; // скорость по пикселям
     let color = getRandomColor();
     return new Rect(x, color, speed);
-    //return rect;
 }
 
 function generateRect() {
@@ -47,8 +45,7 @@ function generateRect() {
         setTimeout(() => {
                 listRect.push(rectCreate());
                 generateRect();
-            }
-            , 1000);
+            }, 1000);
     }
 }
 
@@ -84,37 +81,27 @@ function changeCoordinate(listRect) {
 
 function animate() {
     let canvas = document.getElementById('canvas');
-    canvas.addEventListener('mousedown', checkCoordinate)
-    // let ctx = canvas.getContext('2d');
+    canvas.addEventListener('mousedown', checkCoordinate);
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     canVas.add(listRect);
     changeCoordinate(listRect);
     if (requestId) {
         requestAnimationFrame(animate);
-        //generateRect();
     }
-
 }
 
-// тут может находится ваш код
 let requestId;
 document.body.onload = function () {
-//let requestId;
     let btns = document.querySelectorAll('button');
     let btnStart = btns[0];
     let btnStop = btns[1];
-
-
     btnStart.addEventListener('click', () => {
-        // if (!requestId) {
         listRect = [];
         requestId = requestAnimationFrame(animate);
         score.textContent = 0;
-        //listRect.push(rectCreate());
         generateRect();
         canVas.add(listRect);
         animate();
-        // }
     });
     btnStop.addEventListener('click', () => {
         if (requestId) {
@@ -125,5 +112,4 @@ document.body.onload = function () {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
 
     });
-//animate();
-}
+};
