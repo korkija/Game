@@ -1,7 +1,7 @@
 // тут может находится ваш код
 function Rect(x, color, speed) {
     this.x = x;
-    this.y = 0;
+    this.y = -30;
     this.color = color;
     this.speed = speed;
     this.height = 30;
@@ -34,18 +34,23 @@ function getRandomColor() {
 }
 
 function rectCreate() {
-    let x = Math.floor(Math.random() * (XXX - 20));
-    let speed = Math.random() / 15 + 0.001; // скорость по пикселям
+    let x = Math.floor(Math.random() * (XXX - 30));
+    let speed = Math.random() /2 + 0.5; // скорость по пикселям
     let color = getRandomColor();
     return new Rect(x, color, speed);
 }
 
+let setInt = 0;
+
 function generateRect() {
     if (requestId) {
-        setTimeout(() => {
-                listRect.push(rectCreate());
-                generateRect();
-            }, 1000);
+        if (setInt !== 0) {
+            clearTimeout(setInt);
+        }
+        setInt = setInterval(() => {
+            listRect.push(rectCreate());
+        }, 1000);
+
     }
 }
 
@@ -69,7 +74,6 @@ function checkCoordinate(event) {
                 listRect.splice(index, 1);
             }
         });
-        animate();
     }
 }
 
@@ -95,13 +99,18 @@ document.body.onload = function () {
     let btns = document.querySelectorAll('button');
     let btnStart = btns[0];
     let btnStop = btns[1];
+    requestId = requestAnimationFrame(animate);
+
     btnStart.addEventListener('click', () => {
-        listRect = [];
-        requestId = requestAnimationFrame(animate);
         score.textContent = 0;
+        listRect = [];
+        if (requestId) {
+            cancelAnimationFrame(requestId);
+        }
         generateRect();
-        canVas.add(listRect);
-        animate();
+        if (setInt===0) {
+            animate();
+        }
     });
     btnStop.addEventListener('click', () => {
         if (requestId) {
