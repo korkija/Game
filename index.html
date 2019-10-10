@@ -1,22 +1,32 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <title> JS task </title>
+<html lang="en-US">
+<head>
+    <meta charset="utf-8"  >
+    <title> Game first :) </title>
     <style>
-      canvas {
-        background: yellow;
-      }
+        canvas {
+            background: yellow;
+        }
+
+        label {
+            font-family: 'Verdana', Times, serif; /* Шрифт с засечками */
+        }
     </style>
-  </head>
-  <body>
-    <div>
-      <button> Start </button>
-      <button> Stop </button>
-      <span> Score: <span id="score"> 0 </span> </span>
-    </div>
+</head>
+<body>
+<div>
+    <button> Start</button>
+    <button> Stop</button>
+    <span> Score: <span id="score"> 0 </span> </span>
+    <label>Отскок</label>
+    <input type="checkbox" id="checkDown">
+    <label for="checkDown">снизу</label>
+    <input type="checkbox" id="checkUp">
+    <label for="checkUp">сверху</label>
+</div>
 
-    <canvas width="800" height="650" id="canvas"></canvas>
-      <script type="text/javascript" src="script.js"></script>
+<canvas width="800" height="650" id="canvas"></canvas>
+<script type="text/javascript" src="script.js"></script>
 
-  </body>
+</body>
 </html>

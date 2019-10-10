@@ -16,14 +16,6 @@ function Rect(x, color, speed) {
     };
 }
 
-function Canvas() {
-    this.add = function (elements) {
-        for (let i = 0; i < elements.length; i++) {
-            elements[i].draw();
-        }
-    }
-}
-
 function getRandomColor() {
     let letters = '0123456789ABCDEF';
     let color = '#';
@@ -35,12 +27,10 @@ function getRandomColor() {
 
 function rectCreate() {
     let x = Math.floor(Math.random() * (XXX - 30));
-    let speed = Math.random() /2 + 0.5; // скорость по пикселям
+    let speed = Math.random() / 2 + 0.5; // скорость по пикселям
     let color = getRandomColor();
     return new Rect(x, color, speed);
 }
-
-let setInt = 0;
 
 function generateRect() {
     if (requestId) {
@@ -50,51 +40,78 @@ function generateRect() {
         setInt = setInterval(() => {
             listRect.push(rectCreate());
         }, 1000);
-
     }
 }
 
-let listRect = [];
-let score = document.querySelector("#score");
-let canvasWindow = document.querySelector('canvas');
-let ctx = canvasWindow.getContext('2d');
-let canVas = new Canvas();
-let XXX = canvasWindow.clientWidth;
-let YYY = canvasWindow.clientHeight;
-
 function checkCoordinate(event) {
     if (event) {
-        listRect.forEach(function (element, index) {
+        listRect.forEach(function (element) {
             if ((element.x <= event.layerX) && ((element.x + element.width) >= event.layerX) &&
-                (element.y <= event.layerY) && ((element.y + element.height) >= event.layerY)) {
-                listRect.splice(index, 1);
+                (element.y <= event.layerY) && ((element.y + element.height) >= event.layerY) && (element.width === 30)) {
+                killingWithShow(element);
+                setTimeout(function () {
+                    listRect.splice(listRect.indexOf(element), 1);
+                }, 1000);
                 score.textContent = Number(score.textContent) + 1;
-            }
-            if (element.y > YYY) {
-                listRect.splice(index, 1);
             }
         });
     }
 }
 
+function killingWithShow(element) {
+    element.height += 10;
+    element.width += 10;
+    element.x -= 5;
+    element.y -= 5;
+    element.color = "red";
+    element.speed = 0;
+}
+
 function changeCoordinate(listRect) {
-    listRect.forEach(function (element) {
-        element.y += element.speed;
-    })
+    for (let i = 0; i < listRect.length; i++) {
+        listRect[i].y += listRect[i].speed;
+        listRect[i].draw();
+        if (listRect[i].y > YYY) {
+            if (checkDown.checked) {
+                listRect[i].speed *= -1;
+            } else {
+                listRect.splice(i, 1);
+                i--;
+            }
+        } else {
+            if (listRect[i].y < (-30)) {
+                if (checkUp.checked) {
+                    listRect[i].speed *= -1;
+                } else {
+                    listRect.splice(i, 1);
+                    i--;
+                }
+            }
+        }
+    }
 }
 
 function animate() {
     let canvas = document.getElementById('canvas');
     canvas.addEventListener('mousedown', checkCoordinate);
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    canVas.add(listRect);
     changeCoordinate(listRect);
     if (requestId) {
         requestAnimationFrame(animate);
     }
 }
 
+let setInt = 0;
 let requestId;
+let checkUp = document.querySelector('#checkUp');
+let checkDown = document.querySelector('#checkDown');
+let listRect = [];
+let score = document.querySelector("#score");
+let canvasWindow = document.querySelector('canvas');
+let ctx = canvasWindow.getContext('2d');
+let XXX = canvasWindow.clientWidth;
+let YYY = canvasWindow.clientHeight;
+
 document.body.onload = function () {
     let btns = document.querySelectorAll('button');
     let btnStart = btns[0];
@@ -106,9 +123,11 @@ document.body.onload = function () {
         listRect = [];
         if (requestId) {
             cancelAnimationFrame(requestId);
+        } else {
+            requestId = requestAnimationFrame(animate);
         }
         generateRect();
-        if (setInt===0) {
+        if (setInt === 0) {
             animate();
         }
     });
@@ -119,6 +138,5 @@ document.body.onload = function () {
         listRect = [];
         requestId = false;
         ctx.clearRect(0, 0, canvas.width, canvas.height);
-
     });
 };
