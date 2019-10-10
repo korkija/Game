@@ -46,8 +46,8 @@ function generateRect() {
 function checkCoordinate(event) {
     if (event) {
         listRect.forEach(function (element) {
-            if ((element.x <= event.layerX) && ((element.x + element.width) >= event.layerX) &&
-                (element.y <= event.layerY) && ((element.y + element.height) >= event.layerY) && (element.width === 30)) {
+            if ((element.x <= (event.clientX - event.target.offsetLeft) ) && ((element.x + element.width) >= (event.clientX - event.target.offsetLeft)) &&
+                (element.y <= (event.clientY - event.target.offsetTop)) && ((element.y + element.height) >= (event.clientY - event.target.offsetTop)) && (element.width === 30)) {
                 killingWithShow(element);
                 setTimeout(function () {
                     listRect.splice(listRect.indexOf(element), 1);
@@ -111,6 +111,7 @@ let canvasWindow = document.querySelector('canvas');
 let ctx = canvasWindow.getContext('2d');
 let XXX = canvasWindow.clientWidth;
 let YYY = canvasWindow.clientHeight;
+
 
 document.body.onload = function () {
     let btns = document.querySelectorAll('button');
